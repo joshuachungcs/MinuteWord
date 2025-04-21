@@ -1,54 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant"> <!-- Set language for accessibility -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple clock displaying a Bible verse for each minute.">
+
+    <!-- PWA & Mobile Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#333333"/> <!-- Match your background or theme -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png"> <!-- iOS home screen icon -->
+    <meta name="apple-mobile-web-app-capable" content="yes"> <!-- iOS standalone mode -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!-- iOS status bar style -->
+    <meta name="apple-mobile-web-app-title" content="MinuteWord"> <!-- Title for iOS home screen -->
+
     <title>Minute Word</title>
 
-    <link rel="manifest" href="/manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.8.0/lib/p5.js"></script>
+    <script src="bibleVerseApp.js"></script> <!-- Link to your script -->
 
-    <meta name="theme-color" content="#000000"/> <style>
-        /* Basic styling to center the sketch and remove default margins */
+    <style>
         body {
             margin: 0;
-            overflow: hidden; /* Prevent scrolling */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* Full viewport height */
-            background-color: #f0f0f0; /* Light grey background */
+            overflow: hidden;
+            background-color: #333; /* Dark background */
+            color: #eee; /* Light text for potential future elements */
+            font-family: sans-serif; /* Basic font */
         }
         canvas {
-             /* Ensures the canvas element is treated as a block */
-            display: block;
-            /* Optional: Max width for responsiveness if sketch isn't full screen */
-            /* max-width: 100%; */
-            /* max-height: 100vh; */
+            display: block; /* Prevent extra space below canvas */
         }
     </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
-
-    <script src="sketch.js"></script>
 </head>
 <body>
-    <script>
-        // Check if the browser supports Service Workers
-        if ('serviceWorker' in navigator) {
-            // Wait for the page to load
-            window.addEventListener('load', () => {
-                // Register the service worker file located at the root of the site
-                navigator.serviceWorker.register('/sw.js')
-                    .then((reg) => {
-                        // Registration was successful
-                        console.log('Service Worker registered with scope:', reg.scope);
-                    })
-                    .catch((err) => {
-                        // Registration failed
-                        console.log('Service Worker registration failed:', err);
-                    });
-            });
-        }
-    </script>
+    <!-- The p5.js canvas will be created here by the script -->
+    <!-- You could add a <noscript> tag here for users without JavaScript -->
+    <noscript>
+      <p>This application requires JavaScript to run. Please enable JavaScript in your browser.</p>
+    </noscript>
 </body>
 </html>
