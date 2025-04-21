@@ -1,24 +1,24 @@
 {
-    "name": "Minute Word",
-    "short_name": "Minute Word",
-    "description": "Your description of the Minute Word game.",
-    "start_url": "/index.html",
-    "display": "standalone",
-    "orientation": "landscape",  
-    "background_color": "#ffffff", 
-    "theme_color": "#000000", 
-    "icons": [
-      {
-        "src": "images/icon.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "images/icon.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-
-    ],
-    "scope": "/"
-  }
+  "name": "Minute Word Bible Clock",
+  "short_name": "MinuteWord",
+  "description": "A simple clock displaying a Bible verse for each minute.",
+  "start_url": "/index.html",
+  "display": "standalone", 
+  "background_color": "#333333",
+  "theme_color": "#333333",
+  "orientation": "landscape", 
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable" 
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
