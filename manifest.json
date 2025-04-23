@@ -1,7 +1,7 @@
 {
-  "name": "Minute Word Bible Clock",
+  "name": "Minute Word",
   "short_name": "MinuteWord",
-  "description": "A simple clock displaying a Bible verse for each minute.",
+  "description": "One Bible verse for every minute passed.",
   "start_url": "/index.html",
   "display": "standalone", 
   "background_color": "#333333",

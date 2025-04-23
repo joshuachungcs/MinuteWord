@@ -1899,11 +1899,11 @@ function updateParticleSystems(verseString, referenceString) {
       fillBuffer.textSize(referenceFontSize);
       // Align right within the buffer requires knowing line width *again*
       for (const line of referenceLayout.lines) {
-          let lineWidth = fillBuffer.textWidth(line.text);
-          // Calculate X relative to buffer's right edge
-          let bufferLineX = (line.x + lineWidth) - minX; // Line's right edge on canvas, minus buffer offset
-          fillBuffer.textAlign(RIGHT, BOTTOM); // Align right for drawing
-          fillBuffer.text(line.text, bufferLineX, height-verseFontSize-minY);  //line.y - minY - fillBuffer.textAscent());
+        let lineWidth = fillBuffer.textWidth(line.text);
+        // Calculate X relative to buffer's right edge
+        let bufferLineX = (line.x + lineWidth) - minX; // Line's right edge on canvas, minus buffer offset
+        fillBuffer.textAlign(RIGHT, BOTTOM); // Align right for drawing
+        fillBuffer.text(line.text, bufferLineX, height - verseFontSize - minY);  //line.y - minY - fillBuffer.textAscent());
       }
 
 
@@ -1929,8 +1929,8 @@ function updateParticleSystems(verseString, referenceString) {
       console.warn(`Skipping fill buffer creation due to invalid dimensions: W=${bufferWidth}, H=${bufferHeight}`);
     }
   } catch (error) {
-      console.error("Error during fill point generation:", error);
-      // Continue without fill points if an error occurs
+    console.error("Error during fill point generation:", error);
+    // Continue without fill points if an error occurs
   }
 
   // --- Assign Fill Points to allPoints --- <<< MODIFIED LINE >>>
@@ -2047,7 +2047,8 @@ class Vehicle {
   constructor(x, y, r = 1.5) {
     this.pos = createVector(random(width), random(-10, 0));
     this.target = createVector(x, y);
-    this.vel = p5.Vector.random2D();
+    this.vel = p5.Vector.random2D().mult(random(1, 10)); // Random initial velocity
+    // this.vel = p5.Vector.random2D();
     this.acc = createVector();
     this.r = r + random(-0.5, 0.5); // Size variation
     this.maxspeed = 8; // Adjusted base max speed
@@ -2120,9 +2121,19 @@ class Vehicle {
 
     // Apply transition alpha
     let baseAlpha = alpha(finalColor); // Usually 255 unless verseColor has alpha
+    let currentParticleAlpha = baseAlpha;
+    if (isTransitioning) {
+      let fadeOutAlpha = map(this.pos.y, height * 0.5, height, baseAlpha, 0); // Fade out near the bottom
+      fadeOutAlpha = constrain(fadeOutAlpha, 0, baseAlpha); // Ensure alpha stays within bounds
+      currentParticleAlpha = fadeOutAlpha * transitionAlphaMultiplier;
+    }
     // Use transitionAlphaMultiplier directly (calculated in calcTime)
-    let currentParticleAlpha = baseAlpha * transitionAlphaMultiplier;
+    //let currentParticleAlpha = baseAlpha * transitionAlphaMultiplier;
     finalColor.setAlpha(currentParticleAlpha);
+
+    // Increase size during transition
+    let sizeMultiplier = isTransitioning ? map(transitionAlphaMultiplier, 1, 0, 1, 10) : 1; // Grow size as alpha decreases
+    let currentSize = this.r * 2 * sizeMultiplier;
 
     // <<< ADDED: Don't draw if completely off bottom during transition >>>
     if (isTransitioning && this.pos.y > height + this.r * 5) {
@@ -2130,7 +2141,7 @@ class Vehicle {
     }
 
     fill(finalColor);
-    ellipse(this.pos.x, this.pos.y, this.r * 2);
+    ellipse(this.pos.x, this.pos.y, currentSize);   //this.r * 2);
   }
 
   arrive(target) {
@@ -2172,6 +2183,8 @@ class TextParticle {
     // <<< MODIFIED: Renamed and adjusted fall speed >>>
     this.fallSpeed = random(5, 12); // Pixels per frame during transition (adjust as needed)
     this.horizontalDrift = random(-0.5, 0.5); // Slight side-to-side motion
+    this.vel = createVector(random(-5, 5), random(-5, 5)); // Random initial velocity
+
   }
 
   draw() {
@@ -2183,9 +2196,20 @@ class TextParticle {
 
     // Apply transition alpha
     let baseAlpha = alpha(finalColor); // Usually 255
+    let currentParticleAlpha = baseAlpha;
+
+  if (isTransitioning) {
+    let fadeOutAlpha = map(this.y, height * 0.8, height, baseAlpha, 0); // Fade out near the bottom
+    fadeOutAlpha = constrain(fadeOutAlpha, 0, baseAlpha); // Ensure alpha stays within bounds
+    currentParticleAlpha = fadeOutAlpha * transitionAlphaMultiplier;
+  }
     // Use transitionAlphaMultiplier directly
-    let currentParticleAlpha = baseAlpha * transitionAlphaMultiplier;
+    // let currentParticleAlpha = baseAlpha * transitionAlphaMultiplier;
     finalColor.setAlpha(currentParticleAlpha);
+
+    // Increase size during transition
+    let sizeMultiplier = isTransitioning ? map(transitionAlphaMultiplier, 1, 0, 1, 10) : 1; // Grow size as alpha decreases
+    let currentSize = this.r * 2 * sizeMultiplier;
 
     // <<< ADDED: Don't draw if completely off bottom during transition >>>
     if (isTransitioning && this.y > height + this.r * 5) {
@@ -2193,7 +2217,8 @@ class TextParticle {
     }
 
     fill(finalColor);
-    ellipse(this.x, this.y, this.r * 2);
+    //ellipse(this.x, this.y, this.r * 2);
+    ellipse(this.x, this.y, currentSize); // Use current size
   }
 
   update() {
@@ -2211,6 +2236,10 @@ class TextParticle {
       if (this.x > width + this.r * 2) this.x = -this.r * 2;
 
     } else {
+      this.x += this.vel.x; // Apply random initial velocity
+      this.y += this.vel.y;
+      this.vel.mult(0.95); // Gradually reduce velocity over time
+
       // --- Normal Behavior (Only when NOT transitioning) ---
       let mouseDist = dist(this.x, this.y, mouseX, mouseY);
       let originDist = dist(this.x, this.y, this.originalX, this.originalY);
